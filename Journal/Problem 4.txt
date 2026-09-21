@@ -1,0 +1,41 @@
+Problem 4 
+
+
+
+#include <iostream> goes here
+
+// from Item.h
+struct Item
+{
+	int weight;
+}
+
+// from Inventory.h
+#include "Item.h"
+int TotalWeight(int itemCount);
+
+int main()
+{
+ Item sword;
+ sword.weight = 5;
+ std::cout << sword.weight << "\n";
+ return 0;
+}
+
+
+
+Fix : 
+//Inside Item.h
+#ifndef ITEM_H
+#definiton ITEM_H
+
+struct Item 
+{
+	int weigh;
+}
+
+#endif ITEM_H
+
+
+
+Technically, Inventory.h does not need guards as it is a single header. However as soon as there is more than one, the code will break and there will be errors.

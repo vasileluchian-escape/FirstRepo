@@ -1,0 +1,32 @@
+Problem 1
+
+
+
+main.cpp - E, A, G
+
+#include <iostream>
+#include "Inventory.h"
+
+int main() 
+{
+	std::cout << SlotsUsed(4) << "\n";
+	return 0;
+}
+
+
+inventory.h - C, H, F, B
+
+#ifndef INVENTORY_H
+#define INVENTORY_H
+
+int SlotsUsed(int items);
+
+#endif INVENTORY_H
+
+inventory.cpp - D
+
+int SlotsUsed(int items)
+{
+	return items;
+}
+

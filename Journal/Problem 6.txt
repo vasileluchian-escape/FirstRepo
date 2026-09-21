@@ -1,0 +1,22 @@
+Problem 6
+
+
+
+1. Header - Declaration
+2. Source file - Definiton
+3. Header - declaration of structure
+4. Source - main source file
+5. Header - 
+6. Header - End guard of a header 
+7. Source - only add if needed
+8. Source - Main.cpp file is source where th program starts running from.
+
+
+
+Extra : 
+
+1 and 2.Weapon is first, player is second pasted. The guards save here as if there were none, it would forever loop and keep pasting.
+
+3. Here it does not matter, struct weapon contains int and doesn't contain a player. 
+
+4. 

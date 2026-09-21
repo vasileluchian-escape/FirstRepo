@@ -1,0 +1,7 @@
+Problem 5
+
+
+
+Inside Main, Colours.h will be pasted once. after that Palette.h will be read and pasted, because Colours has guards, a second paste will be skipped and only 1 will remain. 
+
+If we delete the guards from Colours.h, a compiler error of redefinition will happen.

@@ -1,0 +1,49 @@
+Problem 3 
+
+
+
+Inventory.h
+
+#ifndef INVENTORY_H
+#define INVENTORY_H
+
+int SlotsUsed(int items);
+
+int SlotsFree(int items);
+
+#endif INVENTORY_H
+
+
+
+Inventory.cpp
+
+int SlotsUsed(int items)
+{
+	return items;
+}
+
+int SlotsFree(int items)
+{
+	return  10 - items;
+}
+
+
+
+main.cpp
+
+#include <iostream>
+#include "Inventory.h"
+
+int main() 
+{
+	std::cout << SlotsUsed(4) << "\n";
+	return 0;
+}
+
+
+
+3 Breakages : 
+
+1. Compiler error - No declaration for definition.
+2. Link error - No definition for using in main.cpp
+3. Compiler error - Type Float not found for SlotsFree . Not compiler but logic linker error. who cant find the function with the correct type.

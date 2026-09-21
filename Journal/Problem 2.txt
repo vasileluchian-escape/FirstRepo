@@ -1,0 +1,13 @@
+Problem 2
+
+
+
+1. Compiler error - Top of main inside "#include", syntax error
+
+2. Compiler error - either, syntax error or missing "slotsUsed" in main, open where the errorpoints at
+
+3. Linker error - couldn't find the definition for slots used, or definiton and declaration dont match, would go and add it to the correct file definition
+
+4. Compiler error - defined the same thing 2 times in the same file, the header where the definiton is 
+
+5. Linker error - defined the same item 2 times. both files where itis defined.
