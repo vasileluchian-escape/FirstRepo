@@ -70,3 +70,157 @@ and inside the header we do the include for `Invetory.cpp` that way we don't get
 
 -The same thing being defined 2 times in 2 cpp files, or definiton left in the header file. <br>
 -Can be found in any file the error names.
+
+## Problem 3
+
+```cpp
+// Inside Inventory.h
+
+#ifndef INVENTORY_H
+#define INVENTORY_H
+
+int SlotsUsed(int items);
+
+int SlotsFree(int items); // Added line
+
+#endif INVENTORY_H
+```
+
+```cpp
+// Inside Inventory.cpp
+int SlotsUsed(int items)
+{
+	return items;
+}
+
+// Everything underneath is added.
+int SlotsFree(int items)
+{
+	return  10 - items;
+}
+```
+
+```cpp
+// Inside main.cpp
+#include <iostream>
+#include "Inventory.h" // Only header is needed.
+
+int main() 
+{
+	std::cout << SlotsUsed(4) << "\n"; // This will now print 6
+	return 0;
+}
+```
+
+### Breakages : <br>
+
+**Breakage 1** - ```cpp C3861: 'SlotsFree' : identifier not found``` <br>
+-While the definition still exists, ```main.cpp``` never knew it existed, therefore we get a compiler error <br>
+
+**Breakage 2** - ```cpp LNK2019P: unresolved external symbol``` <br>
+-Everything compiles, ```main.cpp``` was promised the definition existed so, everything compiled just fine. <br>
+-The Linker can't find what it needs to link 2 obj files, therefore it throws an error. <br>
+
+**Breakage 3** <br>
+-This one is compiles just fine, int can easly convert to float. <br>
+-However I believe there will be a LNK error. The declaration expects an ```(int)``` not ```float)```, and so I think it might be similar to a missmatch error <br>
+
+## Problem 4
+
+**Inside ```main.cpp```**
+```cpp
+#include <iostream>
+// ... Goes here
+
+// From Item.h
+struct Item
+{
+	int weight;
+}
+
+// From Inventory.h
+
+#include "Item.h"
+// ... From Item.h pastes here again
+
+int TotalWeight(int itemCount);
+
+int main()
+{
+ Item sword;
+ sword.weight = 5;
+ std::cout << sword.weight << "\n";
+ return 0;
+}
+```
+
+### The Error :
+***Compiler Error*** - We have 2 pastes from Item.h with neither of them having guards, so the second paste isn't skipped, and gets pasted a second time, that triggers a compiler error. <br>
+
+### The Fix : 
+
+```cpp
+// Inside Item.h we add a guard.
+
+#ifndef ITEM_H
+#definiton ITEM_H
+
+struct Item 
+{
+	int weigh;
+}
+
+#endif ITEM_H
+```
+
+**Task 4** 
+-As the code is right now, ```Inventorey.h``` does not need guards.  <br>
+-Should we add some, yes because, as soon as we add another delcaraiton or struct, the code will break and throw an error. <br>
+
+## Problem 5
+
+### 1
+**First Paste**
+-From ```main.cpp``` that has its own ```#include Colours.h```, it will go through and create a lable for Colours.h as it does not currently have one and paste it in ```main.cpp```.
+-After that, ```Palette.h``` gets read and pasted, and this is where we reach a second paste. <br>
+
+**Second Paste**
+-It will go thorugh and check if ```Colours.h``` already has a lable, and since it has guards, it will know it exist and skip this paste, and won't paste another copy of ```Colours.h```.
+
+### 2
+-The guard is there to prevent a second paste of a alrady declared lable. So only 1 paste occurs.
+
+### 3
+**Swapping the order of #includes** 
+-This will change nothing, as we have a ```#Include Colours.h``` pasted in both ```main.cpp``` and ```Palette.h```, the only difference is that now, ```Palette.h``` will be the first paste 
+
+### 4
+**Without guards**
+-If ```Colour.h``` had no guards, we would get a compiler error. ```Palette.h``` will be fine as it still has it's guards, but that does not protect ```Colours.h``` as well.
+-The error will be a compiler error with something like ```Colour : struct type redefiniton```.
+
+## Problem 6
+
+**1.** - *Header*
+-It's a declaration, other files will need it to call the function.
+
+**2.** - *Soruce file*
+-A definiton must only be one, inside a header, it will be pasted in every file it is included in.
+
+**3.** - *Header*
+-It's a declaration of the structure of ```Item.h```, so we need to know what it will look like.
+
+**4.** - *Source file*
+-Must only be included where it is needed, inside a header file it is useless.
+
+**5.** - *Header*
+-Anyone who includes a header, shouldn't have to guess what the header is for.
+
+**6.** - *Header*
+-The end of a declaration of a lable, so a cpp file would never need this.
+
+**7.** - *Source file*
+-If a file doesn't need it, than it shouln't be able to see it.
+
+**8.** - *Source file*
+-There is only 1 main.cpp file. This is where the program starts, and where the includes are called for.
