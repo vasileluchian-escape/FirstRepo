@@ -1,4 +1,4 @@
-# WorkBook Journal
+# WorkBook 1 Journal
 
 ## Problem 1 
 
@@ -224,3 +224,37 @@ struct Item
 
 **8.** - *Source file*
 -There is only 1 main.cpp file. This is where the program starts, and where the includes are called for.
+
+# WorkBook 2 Journal 
+
+### Problem 1
+
+-Inside ```main.cpp```, the letters go : **C, G, H, A, F, J, D**. In order.
+```cpp
+constexpr int MaximumShields{ 120 };
+constexpr int MaximumHull { 200 };
+int cuurentShields{ 73 };
+int currentHull{ 150 };
+
+void Problem1()
+{
+	float hullPercent = static_cast<float>(currentHull) / MaximumHull * 100.0f;
+	float shieldPercent = static_cast<float>(currentShilds) / MaximumShields * 100.0f;
+	std::cout << std::format("Shields {:.1f}% Hull {:.1f}%\n", shieldPercent, hullPercent);
+}
+```
+
+### Problem 2
+
+```cpp
+void Problem02()
+{
+	int shieldStrength{};
+	float enginePower{2.5};
+	bool weaponsArmed{true};
+	int hullPlating{45.8};
+	char shipClass{'F'};
+	std::cout << std::format("shields {}, engines {}, armed {}, plating {}, class{}\n", shieldStrength, enginePower, weaponsArmed, hullPlating, shipClass);
+}
+
+```
