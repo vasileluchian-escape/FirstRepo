@@ -246,6 +246,11 @@ void Problem1()
 
 ### Problem 2
 
+**1.** <br>
+-I get no warnings about shieldStrength. <br>
+-All the otrher lines are throwining errors for missing ";".<br>
+
+**2.** <br>
 ```cpp
 void Problem02()
 {
@@ -258,3 +263,90 @@ void Problem02()
 }
 
 ```
+
+**3.** <br>
+-After adding the braces, only ```int hullPlating{45.8};``` is throwing an error.<br>
+-The error : ```Converion from 'double' to 'int' required a narrowing conversion```. <br>
+
+**4.** <br>
+-Changed from int to double, now it stores the correct value, correctly.
+```cpp
+double hullPlating{ 45.8 };
+```
+
+**5.** <br>
+-This line is stored as a double, to make it a float we need to add an f at the ened <br>
+```cpp
+float enginePower{ 2.5f }; // Added the f at the end of 2.5, now its a float not a double.
+```
+
+**6.** <br>
+-Changing to release didn't change the value 0 from shieldStrength.
+
+### Problem 3
+
+```cpp
+void Problem03()
+{
+	// Declarations and Initialisation
+	char callsign{ 'K' };
+	int remainingTorpedos{ 6 };
+	float remainingFuel{ 0.6237f };
+	bool autopilot{ false };
+	long long shipMass{4200000000};
+	
+	std::cout << std::format("|{:>10}|{:>8}|\n", "Callsign", callsign);
+	std::cout << std::format("|{:>10}|{:>8}|\n", "Torpedoes", remainingTorpedos);
+	std::cout << std::format("|{:>10}|{:>8.2f}|\n", "Fuel", remainingFuel * 100.0f);
+	std::cout << std::format("|{:>10}|{:>8}|\n", "Autopilot", autopilot);
+	std::cout << std::format("|{:>10}|{:>8}|\n", "Mass", shipMass);
+}
+```
+
+### Problem 4
+
+**1.** ***Size Table***
+```
+Type 		 | Size | Largest it can hold	|
+-------------|------|-----------------------|
+bool	     | 1	| 1						|
+char		 | 1	| 127					|
+short		 | 2	| 32767  				|
+int			 | 4	| 2147483647  			|
+long long	 | 8	| 9223372036854775807 	|
+float		 | 4	| 3.4028235e+38			|
+std::uint8_t | 1	| 255					|
+std::int32_t | 4	| 2147483647			|
+```
+
+**2.** ***Float Size*** <br>
+-Float surprised me the most, its largest it can hold. <br>
+-Float gives up exact place each digit it is near, while near 0, floats can distinguish values apart fairly precicly.<br>
+-However the distance between the closest to the whole number and the one ones furthers, is lost. <br>
+-We would need an extra command to compera floats, thats how inexcat they are.<br>
+
+### Problem 5
+
+**1.** *The Bug*<br>
+-When printing it does show up woith "0.0%" <br>
+
+**2.** *Why it happens* <br>
+-When we devide, we devide 2 ints and conver to float, we should convert 1 int into a float, than devide. <br>
+
+**3.** *The fix using cast* <br>
+```cpp
+float fraction = static_cast<float>(currentShields) / maximumShields;
+```
+
+**4.** *The fix without cast* <br>
+```cpp
+float percentage = currentShields * 100.0f / maximumShields;
+```
+-Doing this instead still works, the "100.0f" changes the equation to a float one by the end.<br>
+-Doing this also deletes one unecessary line.<br>
+-Between the 2 solutions, I think that the first one doens't massivly change much, so it would be quicker to implement. <br>
+-The second one removes one line, and removes 1 no longer needed variable "fraction". <br>
+-Personally I would stick with the first soltiuon, as I might want to use the fraction as a number before making it a percentage somehwere else in my code.<br>
+
+### Problem 6
+
