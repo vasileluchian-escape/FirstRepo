@@ -350,3 +350,62 @@ float percentage = currentShields * 100.0f / maximumShields;
 
 ### Problem 6
 
+```cpp
+
+constexpr int totalEnemies{ 40 };
+constexpr int scorePerEnemy{ 150 };
+constexpr int maxWaves{ 5 };
+constexpr int scorePerWave{ 1000 };
+constexpr int maxSeconds{ 90 };
+constexpr int scorePerSecond{ 25 };
+
+constexpr int rankAPass{ 5000 };
+
+constexpr int maxScore { (totalEnemies * scorePerEnemy) + (maxWaves * scorePerWave) + (maxSeconds * scorePerSecond) };
+
+
+void Problem06()
+{
+	int enemiesDestroyed{ 14 };
+	int wavesSurvived{ 3 };
+	int secondsRemaining{ 47 };
+	int score = (enemiesDestroyed * scorePerEnemy) + (wavesSurvived * scorePerWave) + (secondsRemaining * scorePerSecond);
+	
+	std::cout << stf::format("You Scored {} out of {}\n", score, maxScore);
+	
+	if (score > rankAPass)
+	{
+		std::cout << "Rank A\n";
+	}
+	else
+	{
+		std::cout << "Rank B\n";
+	}
+}
+```
+
+### Problem 7
+
+```cpp
+auto shipClass{ 'K' };
+auto hullPoints{ 250 };
+auto shieldRegenRate{ 2 };
+auto isDocked{ false };
+auto fuelBurn{ 3 / 4 };
+auto crewCount{ 12u };
+auto turnRadius{ 45.0f };
+auto missileYield{ 1.5 };
+
+char shipClass{ 'K' };
+int hullPoints{ 250 };
+float shieldRegenRate{ 2.0f };
+bool isDocked{ false };
+float fuelBurn{ 3.0f / 4.0f };
+int crewCount{ 12 };
+float turnRadius{ 45.0f };
+double missileYield{ 1.5 };
+```
+
+-If I would write this code, I would replace each one with the intented type, as it would be easier to read and understand much faster, what variable is meant to be what. <br>
+-The first bug happens at ```auto shieldRegenRate{ 2 };```, this will be interpreted as an int when in reality it should be a float, calutalions will all be wrong and truncated, if kept as auto. <br>
+-Second bug is at ```auto fuelBurn{ 3 / 4 };```, this bug is not really caused by auto, but rather hidden, as again it will truncate and hid the real answer under 0, as it will assume it is an int.<br>
