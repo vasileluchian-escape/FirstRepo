@@ -569,3 +569,318 @@ void Problem05()
 	bool fightingClean = ((!isPoisoned) && inCombat); // Looks cleaner.
 
 }
+```
+
+# WorkBook 4 Journal 
+
+### Problem 1
+
+**Letters Used :** *A, C, E, F, G, H, I, J*
+
+**Letters Avoided :** *B, D, K*<br>
+
+**Reason for avoidence :** <br> 
+*B* = ```if (health = 0)``` - Compiles just fine, however sets "health" to 0. instead of comparison, it initialises, giving us a wrong answer, and a wrong variable. <br>
+*D* = ```else if (enemyCount)``` - House Rule, write the comparison out when comparing agains numbers, while compiles fine, it will always compare to 0, which could be wrong if we want to compare agains something else. <br>
+*K* = ```else if (health < 25) std::cout << ...```- Compiles and runs just fine, however will break as soon as we add more than one lines to the statement.
+
+```cpp
+void Problem1()
+{
+	int health{ 30 };
+	int enemyCount{ 3 };
+
+	if (health <= 0)
+	{
+		std::cout << "Status: dead\n";
+	}
+	else if (health < 25)
+	{
+		std::cout << "Status: critical\n";
+	}
+	else if (enemyCount > 2)
+	{
+		std::cout << "Status: outnumbered\n";
+	}
+	else
+	{
+		std::cout << "Status: ready\n";
+	}
+}
+```
+
+**Task 5 :** The console will now print "Status: critical". This is because, as soon as one of the if statements counts true, the code stops there and doesn't check anything underneath that.
+
+### Problem 2
+
+**Predict the outcome**
+```
+B: arrows
+C: staff
+D: mana again
+E: mana is 10
+F: plenty of arrows
+G: ready
+I: partly equipped
+```
+
+**A doesn't print as mana is 0.**
+```cpp
+    if (mana)
+    {
+        std::cout << "A: mana\n";
+    }
+```
+**B prints as currecntly arrows is more than 0. While it passes, the expression should be written out correctly.**
+```cpp
+    if (arrows)
+    {
+        std::cout << "B: arrows\n";
+    }
+```
+**C prints, as hasStaff is indeed set to true.**
+```cpp
+    if (hasStaff == true)
+    {
+        std::cout << "C: staff\n";
+    }
+```
+**D prints, as mana is now initialised to 10, this is wrong as its supposed to be a comparison. This should not have been written if it was correct.**
+```cpp
+    if (mana = 10)
+    {
+        std::cout << "D: mana again\n";
+    }
+	std::cout << std::format("E: mana is {}\n", mana); //this line confirms that mana is now a different value
+```
+**E prints, as we do have more than 3 arrows so thats fine, however G also prints, beacause we didn't use braces to specify what we should print for this if statement so antyhing under "std::cout << "F: plenty of arrows\n";" will jhust print as there is braces to indicate where the code should stop.**
+```cpp
+    if (arrows > 3)
+        std::cout << "F: plenty of arrows\n";
+        std::cout << "G: ready\n";
+```
+**H won't print, mana is 10, so that part is all good, but arrows is only 3 so this comparison fails.**
+```cpp
+    if (mana > 5 && arrows > 10)
+    {
+        std::cout << "H: fully equipped\n";
+    }
+```
+**I prints, as mana auto passes since its set to 10. However this shouln't have printed.**
+```cpp
+    else if (mana > 5 || arrows > 10)
+    {
+        std::cout << "I: partly equipped\n";
+    }
+```
+
+***Writing the most important 3 bugs correctly***
+```cpp
+    if (mana == 10) // changerd = to ==
+    {
+        std::cout << "D: mana again\n";
+    }
+
+
+	if (arrows > 3)
+	{
+		std::cout << "F: plenty of arrows\n"; // added braces around F.
+	}
+    std::cout << "G: ready\n";
+
+
+	//Both mana and arrows are now written correctly.
+    if (mana > 0) 
+    {
+        std::cout << "A: mana\n";
+    }
+    if (arrows > 0)
+    {
+        std::cout << "B: arrows\n";
+    }
+```
+
+### Problem 3
+
+```cpp
+void GuardCastSpell(bool knowsSpell, int mana, int manaCost, bool isSilenced)
+{
+	if (!knowsSpell)
+	{
+		std::cout << "You don't know the spell.\n";
+		return;
+	}
+	if(isSilenced)
+	{
+		std::cout << "You are silenced, and cannot speak.\n";
+		return;
+	}
+	if (mana < manaCost)
+	{
+		std::cout << "You don't have enough mana.\n";
+		return;
+	}
+
+	std::cout << "The Spell is cast!\n";
+}
+```
+
+**Task 4 : To improve from using nested if statements to gurads, the code looks a lot cleaner, also if one of the 3 if statements fail, than the code stops running, if everything passes it just casts the spell.**
+
+### Problem 4
+
+```cpp
+enum class DamageType{ Physical = 0, Fire = 1, Ice =2, Poison = 3};
+enum class ArmourType{ None, Leather, Chain, Plate};
+
+int ApplyResistance(int damage, DamageType type, ArmourType armour)
+{
+    switch (armour)
+    {
+    case ArmourType::None:
+        return damage;
+
+    case ArmourType::Leather:
+        if (type == DamageType::Poison)
+        {
+            return damage / 2;
+        }
+        else
+        {
+            return damage;
+        }
+
+    case ArmourType::Chain:
+        if (type == DamageType::Physical)
+        {
+            return damage / 2;
+        }
+        if (type == DamageType::Ice)
+        {
+            return damage * 2;
+        }
+
+    case ArmourType::Plate:
+        if (type == DamageType::Physical)
+        {
+            return damage / 2;
+        }
+        if (type == DamageType::Fire || type == DamageType::Ice)
+        {
+            return damage * 2;
+        }
+    }
+    return damage;
+}
+
+const char* NameOf(DamageType type)
+{
+    switch (type)
+    {
+    case DamageType::Physical:
+        return "physical";
+
+    case DamageType::Fire:
+        return "fire";
+
+    case DamageType::Ice:
+        return "ice";
+
+    case DamageType::Poison:
+        return "poison";
+    }
+    return "unknown";
+}
+
+void Problem4()
+{
+    int fireAndPlate = ApplyResistance(20, DamageType::Fire, ArmourType::Plate);
+    int physicalAndChain = ApplyResistance(20, DamageType::Physical, ArmourType::Chain);
+
+    std::cout << std::format("Dealting 20 {} damage type against Plate Aromour becomes {}\n", NameOf(DamageType::Fire), fireAndPlate);
+    std::cout << std::format("Dealting 20 {} damage type agains Chain Armour becomes {}\n", NameOf(DamageType::Physical), physicalAndChain);
+}
+```
+
+### Problem 5
+
+**This code Produces 4 faults :**
+```cpp
+enum class Command { MoveNorth, MoveSouth, Attack, Wait, Quit };
+
+void HandleCommand(Command command)
+{
+    switch (command)
+    {
+    case Command::MoveNorth:
+        std::cout << "   You move north.\n";
+
+    case Command::MoveSouth:
+        std::cout << "   You move south.\n";
+        break;
+
+    case Command::Attack:
+        std::cout << "   You attack!\n";
+        break;
+
+    case Command::Wait:
+        std::cout << "   You wait.\n";
+        break;
+    }
+}
+
+void Problem05()
+{
+    HandleCommand(Command::MoveNorth);
+    HandleCommand(Command::Attack);
+    HandleCommand(Command::Quit);
+}
+```
+
+***Fault 1 :*** <br>
+```case Command::MoveNorth:``` has no ```break;```, this will case the output to leack to the next case.
+
+***Fault 2 :*** <br>
+"Quit" has no case in the switch case, which is casuing it to just not do anything, hence the code compiles but nothing actaully happens when we call quit.
+
+***Fault 3 :*** <br>
+"quit" not having a case, creates a second faulty, where we could instead do a default, tho a switch on a enum class don't need a default. A switch that matches nothing, simply does nothing in silence, when we have a default, it will just pick the default.
+
+**The Fix :**
+
+```cpp
+enum class Command { MoveNorth, MoveSouth, Attack, Wait, Quit };
+
+void HandleCommand(Command command)
+{
+    switch (command)
+    {
+    case Command::MoveNorth:
+        std::cout << "   You move north.\n";
+		break;
+
+    case Command::MoveSouth:
+        std::cout << "   You move south.\n";
+        break;
+
+    case Command::Attack:
+        std::cout << "   You attack!\n";
+        break;
+
+    case Command::Wait:
+        std::cout << "   You wait.\n";
+        break;
+
+	case Command::Quit:
+        std::cout << "   See you later.\n";
+        break;
+    }
+}
+
+void Problem05()
+{
+    HandleCommand(Command::MoveNorth);
+    HandleCommand(Command::Attack);
+    HandleCommand(Command::Quit);
+}
+```
