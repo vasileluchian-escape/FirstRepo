@@ -409,3 +409,163 @@ double missileYield{ 1.5 };
 -If I would write this code, I would replace each one with the intented type, as it would be easier to read and understand much faster, what variable is meant to be what. <br>
 -The first bug happens at ```auto shieldRegenRate{ 2 };```, this will be interpreted as an int when in reality it should be a float, calutalions will all be wrong and truncated, if kept as auto. <br>
 -Second bug is at ```auto fuelBurn{ 3 / 4 };```, this bug is not really caused by auto, but rather hidden, as again it will truncate and hid the real answer under 0, as it will assume it is an int.<br>
+
+# WorkBook 3 Journal 
+
+### Problem 1
+
+**Letters Used :**  *B, E, D, I, F, C, K*
+
+**Letters avoided :** *A, G, H*
+
+***A*** - Has no cast to float, the divion would just produce a 0, instead of what we actaully need. <br>
+***G*** - House rule is to not use unsigned int unless there is a good reason, this is only basic math so no reason to use unsigned. <br>
+***H*** - It won't compile, and will throw an error, as it won't do what we expect it to becauase ""<<"" is stronger than ">". <br>
+
+```cpp
+constexpr int MaximumArmour{ 50 };
+
+void Problem1()
+{
+	int rawDamage{ 7 };
+	int currentArmour{ 40 };
+
+	float reduction = static_cast<float>(currentArmour) / MaximumArmour;
+	std::cout << std::format("Reduction: {:.2f}\n", reduction);
+	float finalDamage = rawDamage * (1.0f - reduction);
+ 	std::cout << std::format("Damage taken: {:.2f}\n", finalDamage);
+}
+```
+
+### Problem 2
+
+**Equation 1 | Type : int** <br> 9 / 2 = 4  <br><br>
+**Equation 2 | Type : int** <br> 9 % 2 = 5 <br><br>
+**Equation 3 | Type : double** <br> 9.0 / 2 = 4.5 <br><br>
+**Equation 4 | Type : double** <br> 9 / 2.0 = 4.5 <br><br>
+**Equation 5 | Type : int** <br> -9 / 2 = -4 <br><br>
+**Equation 6 | Type : int** <br> -9 % 2 = -1 <br><br>
+**Equation 7 | Type : int** <br> 9 / 2 * 2 = 8 <br><br>
+**Equation 8 | Type : int** <br> 9 * 2 / 2 = 9 <br><br>
+**Equation 9 | Type : int** <br> 2 + 3 * 4 - 8 / 2 = 11 <br><br>
+**Equation 10 | Type : bool** <br> 7 > 3 = True <br><br>
+**Equation 11 | Type : bool** <br> 1 + 2 > 3 = False <br><br>
+**Equation 12 | Type : bool** <br> 0.1 + 0.2 == 0.3 = False <br>
+
+1. Equations 7 and 8 : <br>
+- Basic math, as both operators have the same level of equality, it goed from left to right. <br>
+
+2. Equations using intiger division alwqays lose data. <br>
+- Division truncates towards 0, so 9 / 2 = 4, not 4.5 and not 5. 
+
+### Problem 3
+
+1. Remaining : 
+- 4294967294 <br>
+
+2. Why this big number ?
+- Remaining is an unsigned value, meaning it can't express negative values.
+- Unsigned stretches from 0 to 4294967294, so it printed its max range.
+
+3. The Fix :
+```cpp
+void Problem03()
+{
+	// All unsigned ints get removed.
+	int stock{ 3u };
+	int purchased{ 5u };
+	int remaining = stock - purchased;
+	std::cout << std::format("Stock: {}\n", stock);
+	std::cout << std::format("Purchased: {}\n", purchased);
+	std::cout << std::format("Remaining: {}\n", remaining);
+}
+```
+
+4. Why does comparison still go through just fine?
+- Its comparing 3 agains 5, while unasinged, they are still ints so the comparison is just fine to go through.
+- Unsigned values are not a danger to comparing between them, or looking at them, but its bad to use them in mathematics.
+
+### Problem 4
+
+```cpp
+constexpr int WeaponCount{ 4 };
+
+void Problem4()
+{
+	int currentWeapon{ 3 };
+
+	int nextWeapon = (currentWeapon + 1) % WeaponCount; // 3 + 1 % 4 = 4 % 4 = 0. This wrapps back just fine.
+
+	int previousWeapon = (current weapon + WeaponCounbt - 1) % WeaponCount; //Weapon count isnt needed until we hit 0, as that will put un in negative numbers, which we do not have assigned, thats why WeaponCount is used in the additon.
+
+	std::cout << std::format("from {}: next {}, previous {} \n", currentWeapon, nextWeapon, previousWeapon)f
+}
+```
+
+### Problem 5
+
+**1. Pass. Division will run first before comparison** <br>
+**2. << is stronger than <, so it won't print what is expected. This line will not compile** <br>
+**3. Written Wrong. The first condition will go through than second, which is what we don't want.** <br>
+**4. Written Wrong, braces won't help either, needs a float cast.** <br>
+**5. Pass. The "!" will run first before "&&"**<br>
+
+
+```cpp
+void Problem05()
+{
+	int health{ 30 };
+	int maxHealth{ 100 };
+	bool hasPotion{ true };
+	bool isPoisoned{ false };
+	bool inCombat{ true };
+
+	// 1. Intended: "is health below a quarter of maximum?"
+	bool isCritical = health < maxHealth / 4;
+
+	// 2. Intended: "print whether health is below 50"
+	std::cout << "Low health: " << health < 50 << "\n";
+
+	// 3. Intended: "has a potion, and is either poisoned or in combat"
+	bool shouldDrink = hasPotion && isPoisoned || inCombat;
+
+	// 4. Intended: "health as a percentage"
+	float percentage = health / maxHealth * 100.0f;
+
+	// 5. Intended: "not poisoned, and in combat"
+	bool fightingClean = !isPoisoned && inCombat;
+
+}
+```
+
+**Written Correctly**<br>
+**Making the expression easier to read as well**
+
+```cpp
+void Problem05()
+{
+	int health{ 30 };
+	int maxHealth{ 100 };
+	bool hasPotion{ true };
+	bool isPoisoned{ false };
+	bool inCombat{ true };
+
+	// 1. Intended: "is health below a quarter of maximum?"
+	bool isCritical = (health < (maxHealth / 4)); // Looks cleaner.
+
+	// 2. Intended: "print whether health is below 50"
+	std::cout << "Low health: " << (health < 50) << "\n"; 
+	// Wrap (health < 50) in braces to indicate importance
+
+	// 3. Intended: "has a potion, and is either poisoned or in combat"
+	bool shouldDrink = (hasPotion && (isPoisoned || inCombat)); 
+	// Wrap (isPoisoned || inCombat) first to do this comparison first before hasPotion &&.
+
+	// 4. Intended: "health as a percentage"
+	float percentage = (static_cast<float>(health) / maxHealth) * 100.0f; 
+	// Making at least 1 int into a float so the operation passes.
+
+	// 5. Intended: "not poisoned, and in combat"
+	bool fightingClean = ((!isPoisoned) && inCombat); // Looks cleaner.
+
+}
