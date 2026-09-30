@@ -884,3 +884,397 @@ void Problem05()
     HandleCommand(Command::Quit);
 }
 ```
+
+# WorkBook 5 Journal
+
+### Problem 1
+
+***Letters Used :*** *B, C, D, E, F*
+
+***Letters Not Used :*** *A, G, H, J*
+
+*A* - Compiles, however increment starts at 3 and goes up, since I > 0, this for loop won't finish. We need to go down so instead we do --i. <br>
+*G* - Compiles just fine, however it will also print "0" because we have "i >= 0", we need it to stop before 0 so we do "i > 0". <br>
+*H* - It won't compile, as the i living outside the semicolon doesnt exist outside the loop with the semicolon. The semicolon essentialy give the for loop an empty body.<br>
+*J* - Declares i outside the loop, which the header of the loop already does. <br>
+*I* - Duplicate line. <br>
+
+```cpp
+void Problem1()
+{
+	for (int i = 3; i > 0; --i)
+	{
+		std::cout << stf::format("{}...\n", i);
+	}
+	std::cout << "Liftoff!\n";
+}
+```
+
+### Problem 2
+
+**Predict the outcome.**
+
+```cpp
+for (int i = 0; i < 4; ++i)
+    {
+        std::cout << std::format("A{} ", i);
+    }
+    std::cout << "\n";
+// This loop will print out A0, A1, A2, A3 and than create a new line and stop there.
+// A4 is not printed as 4 is not < 4, so the for loop will stop at A3.
+```
+
+```cpp
+    int j{ 0 };
+    do
+    {
+        std::cout << std::format("B{} ", j);
+        ++j;
+    }
+// This will just print B0, and in the backgroup it will increment j once, and stop.
+	while (j < 0);
+    std::cout << "\n";
+// Now that J is 1, 1 < 0, so the while loop stops.
+```
+
+```cpp
+    int k{ 0 };
+    while (k < 0)
+    {
+        std::cout << std::format("C{} ", k);
+        ++k;
+    }
+	std::cout << "\n";
+// C doen't print anything as k is 0 and the "while k < 0" returns false so the loop instantly stops here and skips to new line.
+```
+
+```cpp
+    for (int m = 0; m < 6; ++m)
+    {
+        if (m == 2)
+        {
+            continue;
+        }
+
+        if (m == 4)
+        {
+            break;
+        }
+
+        std::cout << std::format("D{} ", m);
+    }
+// This will print : D0, D1, D3. It won't print the rest as the second if statement breaks the loop at "m == 4", therefore the rest of the loop stops there, and D4, D5 do not get printed. It will also skip D2 becasue of the first if statement where "m == 2", this skips the print of D2 an goes to the next.
+```
+
+```cpp
+    for (int p = 0; p < 3; ++p)
+    {
+        for (int q = 0; q < 2; ++q)
+        {
+            std::cout << std::format("E{}{} ", p, q);
+        }
+    }
+    std::cout << "\n";
+// This will print : E00, E01, E10, E11, E20, E21. The first number is the outer for loop, and the second number is the outer most ring.
+// Starts at 0 as the increment only happens after one loop.
+```
+
+### Problem 3
+
+**Fix the broken loops, the broken loops and that they print:**
+```cpp
+void Broken1()
+{
+    for (int i = 1; i < 5; ++i)
+    {
+        std::cout << std::format("{} ", i);
+		// This will print : 1, 2, 3, 4
+    }
+    std::cout << "\n";
+	// Than it will print a new line
+}
+```
+
+```cpp
+void Broken2()
+{
+    for (int i = 1; i <= 5; ++i); // The semicolon here makes this for loop have no body, anything underneath this isn't counted as the body of the for loop.
+    {
+        std::cout << std::format("{} ", i);
+		// This won't compile as the I here is not the same as i in the for loop
+    }
+    std::cout << "\n";
+}
+```
+
+```cpp
+void Broken3()
+{
+    int i{ 1 };
+    while (i <= 5)
+    {
+        std::cout << std::format("{} ", i);
+		// This will forever keep looping as there is not increment in the while loop, the while loop will always be true.
+    }
+    std::cout << "\n";
+}
+```
+
+```cpp
+void Broken4()
+{
+    for (int i = 1; i <= 5; ++i)
+    {
+        std::cout << std::format("{} ", i);
+        ++i;
+		//The increment happens 2 times.
+		//The print will be : 1, 3, 5, skipping 2 and 4.
+    }
+    std::cout << "\n";
+}
+```
+
+**The fixed loops so they increment 1 to 5, on each new line.**
+
+```cpp
+void Fixed1()
+{
+    for (int i = 1; i <= 5; ++i) // fixed by adding "<="
+    {
+        std::cout << std::format("{} ", i);
+    }
+    std::cout << "\n";
+}
+
+void Fixed2()
+{
+    for (int i = 1; i <= 5; ++i) // fixed by removing semicolone.
+    {
+        std::cout << std::format("{} ", i);
+    }
+    std::cout << "\n";
+}
+
+void Fixed3()
+{
+    int i{ 1 };
+    while (i <= 5)
+    {
+        std::cout << std::format("{} ", i);
+		++i; // fixed by adding an incrememt each time it loops.
+    }
+    std::cout << "\n";
+}
+
+void Fixed4()
+{
+    for (int i = 1; i <= 5; ++i)
+    {
+        std::cout << std::format("{} ", i);
+        // fixed by removing the second incrment.
+    }
+    std::cout << "\n";
+}
+```
+
+### Problem 4
+
+**Create a dungeon room**
+
+```cpp
+constexpr int RoomWidth{ 12 };
+constexpr int RoomHeight{ 6 };
+
+void Problem4()
+{
+	for (int y = 0; y < RoomHeight; ++y) // Have to start with y, than x when creating a grid in cpp.
+	{
+		for (int x = 0; x < RoomWidth; ++x) // For every y itiration, we have a lane of x all the way to 6.
+		{
+			if (y == 0 || x == 0 || y == RoomHeight - 1 || x = RoomWidth - 1)
+			{
+				std::cout << '#'; // This will print for the outside as long as we have either  y or x == 0 or max RoomHeight or RoomWidth - 1.
+			}
+			else
+			{
+				std::cout << '.'; // This will only print if the x and y are both NOT 0 or NOT the max RoomHeight or RoomWidth.
+			}
+		}
+		std::cout << "\n";
+	}
+	std::cout << "\n";
+
+	constexpr int DoorY{ RoomHeight / 2 };
+
+	for (int y = 0; y < RoomHeight; ++y)
+	{
+		for (int x = 0; x < RoomWidth; ++x)
+		{
+			if ( x == 0 && y == DoorY)
+			{
+				std::cout << '+'; // Create a door only one the ouside of the wall aka, x == 0. This prevents a door being created anywhere where it makes no sense.
+			}
+			else if (y == 0 || x == 0 || y == RoomHeight - 1 || x = RoomWidth - 1)
+			{
+				std::cout << '#';
+			}
+			else
+			{
+				std::cout << '.';
+			}
+		}
+		std::cout << "\n";
+	}
+	std::cout << "\n";
+
+	for (int x = 0; x < RoomWidth; ++x)
+	{
+		std::cout << std::format("{:>3}", 0 * RoomWidth + x);
+	}
+	std::cout << "\n";
+	std::cout << std::format("foor index: {}\n", DoorY * RoomWidth + 0);
+}
+```
+
+# WorkBook 6 Journal
+
+### Problem 1
+
+**Create a Function from given lines**
+
+***Used Letters :*** - *A, C, D, E, G, H, I* 
+
+***Avoided Letters :*** - *B, F, J*
+
+**Reasons why we didnt use the avoided letters:** <br>
+
+*B* - ```int g_hitCount{ 3 };``` this line server no purpose to this function, it will compile but it won't do antthing. <br>
+*F* - ```void AddBonus(int total) { total += 10; }``` once again, this line servers no purpose to the code we are creating.
+*J* - ```int TotalDamage(int hits, int perHit) { return hits + perHit; }``` this ilne will compile just fine, however the return is not what we need, the calculation used is wrong.
+
+```cpp
+#include <iostream>
+#include <format>
+
+int TotalDamage(int hits, int perHit);
+void PrintReport(int total);
+
+int TotalDamage(int hits, int perHit)
+{
+	return hits * perHit;
+}
+
+int PrintReport(int total)
+{
+	std::cout << std::format("Total: {}\n", total);
+}
+
+// The given main goes here
+int main()
+{
+    int hitCount{ 3 };
+    int damagePerHit{ 7 };
+
+    int total = TotalDamage(hitCount, damagePerHit);
+    PrintReport(total);
+
+    return 0;
+}
+```
+
+### Problem 2
+
+**Predict the outcome :**
+
+```
+OUTPUT : 
+A: 5
+B: 50
+C: 55
+D: 5
+counter 1, tally 1
+counter 1, tally 2
+counter 1, tally 3
+```
+
+*D* - It will be 5 again, as the braces takes in the int, and reinitialises 50 instead of 5, however when we come out of the braces, that value will be deleted, so the value come back to 5. <br> <br>
+*Counter* / *Tally* - Counter will just stay as 1 as its an asigned int, and will just be reinitialied every time, however tally is a static, which can only exists one per program running, so as soon as the program starts, tally is created, and rememeber, whereas counter is not.
+
+### Problem 3
+
+**Fix the function :**
+```cpp
+void DrinkPotion(int health)
+{
+    health += 25;
+    std::cout << std::format("   You feel better. Health is now {}\n", health);
+}
+
+void Problem03()
+{
+    int playerHealth{ 40 };
+
+    std::cout << std::format("Health: {}\n", playerHealth);
+    DrinkPotion(playerHealth);
+    std::cout << std::format("Health: {}\n", playerHealth);
+}
+```
+- playerHealth is unchanged, as when we gave the ```DrinkPotion(int health)```, we gave it a copy of playerHealth not the actual value.
+
+```cpp
+int DrinkPotion(int health) // Drink Potion now has to return a value, so whatver we pass in now returns and come out.
+{
+    health += 25;
+    std::cout << std::format("   You feel better. Health is now {}\n", health);
+    return health;
+}
+
+void Problem03()
+{
+    int playerHealth{ 40 };
+
+    std::cout << std::format("Health: {}\n", playerHealth);
+    playerHealth = DrinkPotion(playerHealth);
+	//Because DrinkPotion has a int return, when we call that function it will return us a value instead of just deleting it.
+    std::cout << std::format("Health: {}\n", playerHealth);
+}
+```
+- Task 4 : This fix makes it awkward as it only return 1 value, if we need returns of 4 different things like Health, mana, stamina and potion state, that can create a problem, as this function only returns 1 value for one variable.
+
+### Problem 4
+
+**Build a Function :**
+
+```cpp
+float PercentageOf(int part, int whole)
+{
+	return static_cast<float>(part) / whole * 100.0f;
+}
+
+void PrintStat(const char* label, int value)
+{
+	std::cout << std::format("{:>11}: {:5}\n", label, value);
+}
+
+void PrintStat(const char* label, float value)
+{
+	std::cout << std::format("{:>11}: {:>5.1f}\n", label, value);
+}
+
+void PrintSeparator(int width, char symbol = '-')
+{
+	std::cout << std::format("{:{}<{}}\n", "", symbol, width);
+}
+
+void Problem4()
+{
+	int health{ 40 };
+	int maxHealth{ 60 };
+
+	PrintSeparator(20);
+	PrintStat("Health", health);
+	PrintStat("Max", maxHealth);
+	PrintStat("Percent", PercentageOf(health, maxHealth));
+	PrintSeparator(20, '=');
+}
+```
