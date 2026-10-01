@@ -1278,3 +1278,378 @@ void Problem4()
 	PrintSeparator(20, '=');
 }
 ```
+
+# WorkBook 7 Journal
+
+### Problem 1
+
+**Assemble the code**
+
+***Letters Used*** - *C, D, E, F, H, I, J, K*
+
+***Letters Avoided*** - *A, B, G*
+
+**Reason why letters avoided :** <br>
+*A* - Compiles and runs fine, but we dont need to create a reference of ```float fuel```, that would mess up the code in the future. <br>
+*B* - Compiles, wrong output, unlike A, we actually need the reference here so we can save the new calcuated float value, so that we can print it out again. This line appears to be fine, however the output would be wrong, which is usually worst than a crash or error.<br>
+*G* - This would compile fine, however we dont need it in this code, it would do nothing. <br>
+
+```cpp
+int LapsRemaining(float fuel, float burnRate) // C
+{
+    return static_cast<int>(fuel / burnRate); // D
+}
+void BurnOneLap(float& fuel, float burnRate) // E
+{
+    fuel -= burnRate; // F
+}
+
+Problem1()
+{
+    float fuel{ 60.0f }; // H
+    float burnRte{ 2.4f }; // I
+
+    std::cout << std::format("laps: {}\n", LapsRemaining(fuel, burnRate)); // J
+
+    BurnOneLap(fuel, burnRate); 
+
+    std::cout << std::format("fuel now: {:.1f}\n", fuel); // K
+}
+```
+
+### Problem 2
+
+**Predict the outcome**
+
+```cpp
+void Adjust(int value)
+{
+    value += 100;
+}
+
+void AdjustRef(int& value)
+{
+    value += 100;
+}
+
+void Problem02()
+{
+    int downforce{ 10 };
+    int& alias{ downforce };
+
+    std::cout << std::format("A: {} {}\n", downforce, alias);
+    // Output : A: 10, 10
+
+    alias = 25;
+    std::cout << std::format("B: {} {}\n", downforce, alias);
+    // Output : B: 25, 25
+
+    int other{ 99 };
+    alias = other;
+    std::cout << std::format("C: {} {} {}\n", downforce, alias, other);
+    // Output : C: 99, 99, 99
+
+    other = 7;
+    std::cout << std::format("D: {} {} {}\n", downforce, alias, other);
+    // Output : D: 99, 99, 7
+
+    Adjust(downforce);
+    std::cout << std::format("E: {}\n", downforce);
+    // Output : E: 99
+
+    AdjustRef(downforce);
+    std::cout << std::format("F: {}\n", downforce);
+    // Output : F: 199
+
+    const int& view{ downforce };
+    downforce = 3;
+    std::cout << std::format("G: {}\n", view);
+    // Output G: 3
+}
+```
+**Task 1:** - Line C, Other is set to 99, and other is set to alias, since, alias is a reference of downforce, downforce is also set to other. Now all 3 variables are the same. <br>
+**Task 2:** - Line G, ```const int& view``` is a promis that the name won't change, doesn't say anything of what is stored in the name, the type is just an int. A const reference is a read-only view not a read-only variable.
+
+### Problem 3
+
+**Create a Progam**
+```cpp
+const int& TotalDownForce(const CarSetup& setup) 
+// const& : an read-only object, no changes.
+{
+    return setup.frontWing + setup.rearWing;
+}
+void SoftenSuspention(CarSetup& setup, float amount)
+// & only, because the setup changes here.
+{
+    setup.rideHeight += amount;
+}
+int FuelForLaps(int lapCount, float burnRate)
+{
+    return lapCount * burnRate;
+}
+void ApplyPitStop(const CarSetup& setup, float& fuel, float refuel, int tyrePressure)
+// Using both const and &, as setup DOES NOT change here. 
+// Fuel uses & only as the fuel of the car does need to change, and stay changed.
+{
+    fuel = refuel;
+    std::cout << std::format("Pit Stop: Fuel: {}, Typre Pressure: {}\n", fuel, tyrePressure);
+
+}
+```
+
+### Problem 4
+
+**Fix the code / debug**
+
+*Broken Code :*
+```cpp
+void Swap(int first, int second)
+{
+    int temporary{ first };
+    first = second;
+    second = temporary;
+}
+
+int& Fastest(int lapA, int lapB)
+{
+    if (lapA < lapB)
+    {
+        return lapA;
+    }
+
+    return lapB;
+}
+
+void Problem04()
+{
+    int driverOne{ 84 };
+    int driverTwo{ 91 };
+
+    Swap(driverOne, driverTwo);
+    std::cout << std::format("after swap: {} {}\n", driverOne, driverTwo);
+
+    int& best{ Fastest(driverOne, driverTwo) };
+    std::cout << std::format("best lap: {}\n", best);
+}
+```
+
+1. ```Swap(int first, int second)``` - Takes a copy of ``` int driverOne{ 84 } ; int driverTwo{ 91 };```. This won't change the actual values, it will only make a copy of them, change the copy, than delete it once its out of the function.
+2. **The Fix** - ```Swap(int& first, int& second)``` - Using ```&``` to create a reference of first and second driver, will actully change the outcomes.
+3. **Warning Message** - ``` C4172: returning address of local variable or temporary```
+4. ```int& Fastest(int lapA, int lapB)``` has ```lapA``` and ```lapB``` as copies. Once the code exits this function, these 2 values are deleted, however when it returns a value, it returns a deleted number, hence the warning. Returning a temporary variable that was on the memory. As soon as we change something, like adding another funtcion to the call or something else, it will print something that is not needed.
+5. **Fix 1** - ```int Fastest(int lapA, int lapB)```. Remove &, so that we can return by value.<br>
+5. **Fix 2** - ```int& Fastest(int& lapA, int& lapB)```. Adding & to both ints, takes references, so that we know what belongs to what caller reference. 
+
+### Problem 5
+
+**Refactoring**
+
+```cpp
+int TotalDownforce(CarSetup setup);
+// We are passing in copies of CarSetup however we really don't need to. Insted we could pass in a read-only value.
+int TotalDownforce(const CarSetup& setup); // The fix.
+//---------------------------------------------
+
+void ResetSetup(CarSetup setup);
+// We are passing in a copy, therefore, the actual changes won't stick. Therefore the function can't do its job.
+void ResetSetup(CarSetup& setup); // The fix
+//---------------------------------------------
+
+float AverageLapTime(const float& lapOne, const float& lapTwo);
+// Unecessary consts on  both floats, will take longer to compile.
+float AverageLapTime(float lapOne, float lapTwo); //The Fix
+//---------------------------------------------
+
+void RecordLap(const float& fastestSoFar, float thisLap);
+// Const won't let fastestSoFar change its value, so the fucntion can't do what its meant to.
+void RecordLap(float& fastestSoFar, float thisLap); // The Fix
+//---------------------------------------------
+
+int GearFor(const CarSetup setup, const int speed);
+// Copies the setup, and passes in a read-only copy of speed. Very misleading.
+int GearFor(const CarSetup& setup, int speed); // The Fix
+//----------------------------------------------
+
+bool IsLegal(CarSetup& setup);
+// Compiles but misleading, it only asks a question, therefore is shouln't have to change anything.
+bool IsLegal(const CarSetup& setup); // The Fix
+```
+
+### Problem 6
+
+1. ```value``` - Because a float is similar in size to a reference no smaller.
+2. ```const&``` - Because the function only reads the CarSetup and doesn't need to change.
+3. ```&``` - The function needs to read and adjust CarSetup, therefore we pass in a reference of Carsetup.
+4. ```&``` - A counter for a single function, needs inremeneting, not making new ones.
+5. ```const``` - Read-only characer value by function. 
+6. ```value``` - The function will return a brand new setup, not adjsut it.
+7. ```const&``` - Asking a question shouldn't need to change values, or make copies.
+
+# WorkBook 8
+
+### Problem 1
+g, i, k
+**Construct a program**
+
+***Used Letters*** - *A, B, C, D, E, F, H, J, L*
+
+***Avoided Letter*** - *G, I, K*
+
+**Reasons to avoid :**
+*G* - ```int width;``` - doesn't get assigned anything, it will compile, but it it't the wrong way to declare vairables with no initialisation. <br>
+*I* - ```int Area() { return width * height; }``` - Compiles, however as son as we try to get a const Rectangle area, it will fait to deliver. <br>
+*K* - ```Rectangle(int width, int height) { width = width; height = height; }``` - Comiples however it's wrong, we assign width to width and height to high, however the members are left at 0, therfore this constructor achieves nothing.<br>
+
+```cpp
+struct Rectangle // D
+{ // H
+    int height{ 0 }; // C
+    int width{ 0 }; //J
+
+    Rectangle() = default; // E
+    Rectangle(int width, int height) : width(width), height(height) {}; // B
+
+    int Area const() 
+    {
+        return width * height; // A
+    }
+
+    bool operator==(const Rectangle& rhs) const { return width == rhs.width && height == rhs.height; } // L
+
+}; // F
+```
+
+### Problem 2
+
+**Predict the outcome :**
+
+```cpp
+struct Counter
+{
+    int value{ 0 };
+
+    void Add(int amount)
+    {
+        value += amount;
+    }
+
+    int Get() const
+    {
+        return value;
+    }
+};
+
+void TakesACopy(Counter counter)
+{
+    counter.Add(100);
+    std::cout << std::format("  inside: {}\n", counter.Get());
+}
+
+void Problem02()
+{
+    Counter a;
+    std::cout << std::format("A: {}\n", a.Get());
+
+    a.Add(5);
+    std::cout << std::format("B: {}\n", a.Get());
+
+    Counter b{ a };
+    b.Add(5);
+    std::cout << std::format("C: {}\n", a.Get());
+    std::cout << std::format("D: {}\n", b.Get());
+
+    TakesACopy(a);
+    std::cout << std::format("E: {}\n", a.Get());
+}
+```
+```
+Outcome : 
+A : 0
+B : 5
+C : 5
+D : 10
+E : 5
+```
+*E* - It did create a copy, and it did add 100 to it, however since its a copy, as soon as it left its function's braces, it got deleted and we got left with 5.
+
+### Problem 3 
+```cpp
+// Skipped for now
+```
+
+### Problem 4
+
+**Code a program :**
+
+```cpp
+struct Fraction
+{
+    int numerator{ 0 };
+    int denominator{ 1 };
+
+    Fraction() = default;
+
+    Fraction(int numerator, int denominator) : numerator(numerator), denominator(denominator) {};
+
+    float AsDecimal() const
+    {
+        return static_cast<float>(numerator) / denominator;
+    }
+    Fraction operator*(const Fraction& rhs) const
+    {
+        return{ numerator * rhs.numerator, denominator * rhs.denominator };
+    }
+    bool operator==(const Fraction& rhs) const
+    {
+        return numerator * rhs.denomintor == rhs.numerator * denominator;
+    }
+
+    void PrintFraction() const
+    {
+        std::cout << std::format("{} / {}, {:.3f}\n", numerator, denominator, AsDecimal());
+    }
+}
+```
+
+**To Do 6** - The obvious was of doing it it to use ```AsDecimal()```. However that breaks rule : == agains a floating value. And some pairs of numbers WILL fail. The better way of doing it to do cross multiplication, that way we don't compare floating point values, and the values are whole (easier to work with).
+
+### Problem 5
+
+```cpp
+// Skipped for now
+```
+
+### Problem 6
+
+**Const or no Const?**
+
+```cpp
+class Stopwatch
+{
+public:
+    Stopwatch(int limitSeconds);
+
+    int GetElapsed();               // 1. returns how long has passed
+    void Tick();                    // 2. advances by one second
+    bool HasFinished();             // 3. is elapsed at or past the limit?
+    void Reset();                   // 4. back to zero
+    float AsMinutes();              // 5. elapsed divided by 60
+    void SetLimit(int seconds);     // 6. changes the limit
+    int GetLimit();                 // 7. returns the limit
+
+private:
+    int elapsedSeconds{ 0 };
+    int limitSeconds{ 0 };
+};
+```
+1. Const - Read and return a value
+2. Mo Const - Read and modifiy the seconds
+3. Const - Read and compare values
+4. No Const - Reset the time back to the begining
+5. Const - Change values from seconds to mins.
+6. No Const - Modifies the value seconds
+7. Const - Only returns the value seconds.
+
+**To Do 1:** ```C2662``` - This error is reported when the code gets to call the function, NOT where const is missing. A missing const can produce a lot of errors where, the code is acutally fine. <br>
+**To Do 2:** ```float AsMinutes();``` - Can be written as both const and non const. C++ has something called mutble, that lets a const change. This essentialy has a member that helps the function work however it is not part of said function. In this case seconds is part of AsMinutes(), but it doesn't return seconds, it returns a different value. <br>
