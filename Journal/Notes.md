@@ -54,3 +54,33 @@ B - 2 engines, 2 seeds : different results
 C - an engines copied, than both drawn : same First result.
 D - 1 engine, 2 draws in a row : different result
 E - a big Distribution, then a small distribution : different results
+
+## Part 3
+
+### std::string, std::string_view, and std::format
+
+Creating a map and environment in text.
+A string is another container like vector.
+```cpp
+std::string bar(n, '#'); // Iitialising a string, using round paranthesis, no brackets.
+std::string bar{12, 55}; // This will translate to charaters.
+
+std::string path{ " path/path.dot" }; // Path to string
+
+std::string first("goblin");
+std::string second("Goblin");
+// We can also compare strings, in capital letters have a lower bit binary assigned, whereas lowercase have a higher value
+// In this case "Goblin" < "goblin" is "true". if we compare "Goblin" == "goblin" is "false".
+
+std::cout << std::format("{0} has {1}. Yes, {0}.\n", name, health);
+// Inside format now we have {0} and {1}, this allows us to assign an index to what we want to put in there.
+// {0} = name, {1} = health, now we can reuse 0 multiple times in the same line without having to re input.
+
+std::cout << std::format("{:<12}, {:>6}\n");
+// {:<12} means 12 characters to the left, and {:>6} means 6 characters to the right.
+
+std::string input{"132"};
+std::stoi(input); // stoi converts a string to an int. 
+// stoi stops at the first character it cannot use. aka "123abc", when it gets to a it stops convering. this would throw an error.
+
+```
