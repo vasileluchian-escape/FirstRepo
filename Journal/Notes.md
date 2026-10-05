@@ -35,3 +35,22 @@ for (const Track& t : playlist ) // loops over and only looks at each item
 for (Track& t : playlist ) // looks and might change each item in the vector 
 for (Track t : playlist ) // only looks at a copy of playlist, almost always a mistake to write.
 ```
+
+## Part 2
+
+### Randomness
+
+```cpp
+std::mtd19937 engine{ 42 };
+// std::mtd19937 is the library used for creating random numbers
+// engine is the name of the variable and 42 is the seed, which generates the random numbers
+// passing in the same seed would generate the same set of random numbers. This is called pseudo-random.
+// We can create a function to generate a random seed for geneating random numbers for the dungeon.
+```
+
+Problam 2 of WorBook 12 : 
+A - 2 engines, same seed produces : same result
+B - 2 engines, 2 seeds : different results
+C - an engines copied, than both drawn : same First result.
+D - 1 engine, 2 draws in a row : different result
+E - a big Distribution, then a small distribution : different results
