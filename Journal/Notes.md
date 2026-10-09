@@ -84,3 +84,51 @@ std::stoi(input); // stoi converts a string to an int.
 // stoi stops at the first character it cannot use. aka "123abc", when it gets to a it stops convering. this would throw an error.
 
 ```
+# Week 3 - Friday 09 / 10 / 26 Notes
+
+## Part 1
+
+**Quiz**
+1. 1+2+3+4+5+6 = 21 / 6 = 3.5 - Expected value
+2. Expected Redraw around every ~ 1.00000002 in ~50 million
+3. The min and max Room size is what limits BspRecursionDepth.
+4. Every time a room is cut, its devided into 2 regions, each region shares no tiles, hence no need to check.
+5. 2 dice of 6 give 7 more often, this is becaue there is a higher chance that 2 numbers that equal 7 will roll, versus a draw which is a flat equal chance between 2-12.
+6. Recursive - a fucntion that calls itself over and over.
+
+### Destructors and RAII
+
+**Destructors**
+Braces create a scope, anything "local" gets destryed. Local vairables are created in the order we put in the file, and when leaving a scope, they get destroyed from the last created to first.
+
+```cpp
+{
+    Announcer a{ "A" }; // Created starting from A
+    Announcer b{ "B" };
+    Announcer c{ "C" }; // Finish creating at C
+} // Get destroyed here from C to A.
+```
+
+**RAII**
+This is to deal with Resource allocation, default constructors, no deconstructors, no copy consturctors, no assigning opearation constructor. <bR>
+
+## Part 2 
+
+### Streams, Files, Errors
+
+Things can go wrong outside of our control. This part is about how to manage the unexpected.
+
+```cpp
+std::cout << // This is a stream
+variableName.() // The things that go in the stream, in this case it will be printed on the console.
+```
+
+```std::ofstream``` - the way we create, open a file
+```std::ifstream``` - writing to an opened file.
+```out <<``` - The way we write to the opened file
+```cpp
+std::ofstream out( "demo.txt");
+std::ifstream ();
+out << "something" << '\n';
+```
+
